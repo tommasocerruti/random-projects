@@ -3,11 +3,24 @@ This project is a simple todo app written in 'Next.js' (https://nextjs.org/) boo
 
 ## Creating the project
 
-I created the project using 'npx create-next-app@latest .' and set everything to YES.
+Created the project using 'npx create-next-app@latest .' and set everything to YES.
 
-Then install all the dependencies with prisma using 'npm i prisma --save-dev', in order to interact with the db.
+Installed all the dependencies with prisma using 'npm i prisma --save-dev', in order to interact with the db.
 
-Then initialise prisma settins sql-lite db using 'npx prisma init --datasource-provider sqlite', so this creates db schema under dir prisma.
+Initialised prisma settins sql-lite db using 'npx prisma init --datasource-provider sqlite', so this creates db schema under dir prisma.
+
+Migrated to the db using 'npx prisma migrate dev --name init'
+
+Created db.ts in order to use the db within the app.
+
+Removed boilerplate in the global.css as well as in page.tsx, and modified layout.tsx.
+
+Added another route, by creating a folder 'new' with inside its respective page.
+
+Modified page.tsx to execute our intended behavior.
+
+Created the folder component to create the TodoItem component.
+
 
 
 ## Getting Started
