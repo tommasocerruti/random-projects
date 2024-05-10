@@ -24,5 +24,20 @@ def main():
     scrivi_su_csv(coppie, file_csv_output)
     print(f"Coppie univoche salvate in '{file_csv_output}'.")
 
+def main():
+    file_csv_input = 'comuni_archivio.csv'  # Inserisci il percorso del tuo file CSV
+    file_csv_output = 'coppie_univoche.csv'  # Specifica il nome del file di output
+    coppie = estrai_coppie_univoche(file_csv_input) # Estrai coppie univoche
+    coppie_formatted = coppie.apply(lambda row: f"{row['DENOMINAZIONE_IT']} ({row['SIGLAPROVINCIA']}),", axis=1) # Formatta coppie
+    
+    # Write the formatted output to a CSV file
+    with open(file_csv_output, 'w') as file:
+        file.write("DENOMINAZIONE(SIGLAPROVINCIA)\n")
+        for item in coppie_formatted:
+            file.write("%s\n" % item)
+    
+    print(f"Coppie univoche salvate in '{file_csv_output}'.")
+
+
 if __name__ == "__main__":
     main()
