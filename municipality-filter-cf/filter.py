@@ -17,26 +17,44 @@ def scrivi_su_csv(df, nome_file):
     # Scrive il DataFrame su un nuovo file CSV
     df.to_csv(nome_file, index=False)
 
-def main():
-    file_csv_input = 'comuni_archivio.csv'  # Inserisci il percorso del tuo file CSV
-    file_csv_output = 'coppie_univoche.csv'  # Specifica il nome del file di output
-    coppie = estrai_coppie_univoche(file_csv_input)
-    scrivi_su_csv(coppie, file_csv_output)
-    print(f"Coppie univoche salvate in '{file_csv_output}'.")
+import re
+
+def escape_single_quotes(text):
+    if pd.isna(text) or isinstance(text, float):
+        return text
+    else:
+        return re.sub(r"'", r"\'", str(text))
 
 def main():
-    file_csv_input = 'comuni_archivio.csv'  # Inserisci il percorso del tuo file CSV
-    file_csv_output = 'coppie_univoche.csv'  # Specifica il nome del file di output
-    coppie = estrai_coppie_univoche(file_csv_input) # Estrai coppie univoche
-    coppie_formatted = coppie.apply(lambda row: f"{row['DENOMINAZIONE_IT']} ({row['SIGLAPROVINCIA']})", axis=1) # Formatta coppie
-    
+    file_csv_input = 'comuni_archivio.csv'
+    file_csv_output = 'coppie_univoche.csv'
+    coppie = estrai_coppie_univoche(file_csv_input)
+
+    # Filter out entries where 'SIGLAPROVINCIA' is NaN
+    coppie = coppie.dropna(subset=['SIGLAPROVINCIA'])
+
+    # Apply escape_single_quotes function to both columns
+    coppie['DENOMINAZIONE_IT'] = coppie['DENOMINAZIONE_IT'].apply(escape_single_quotes)
+    coppie['SIGLAPROVINCIA'] = coppie['SIGLAPROVINCIA'].apply(escape_single_quotes)
+
+    # Format the output string with single quotes
+    coppie_formatted = []
+
+    for index, row in coppie.iterrows():
+        denominazione = row['DENOMINAZIONE_IT']
+        sigla = row['SIGLAPROVINCIA']
+        formatted_entry = f"'{denominazione} ({sigla})',"
+        coppie_formatted.append(formatted_entry)
+
     # Write the formatted output to a CSV file
     with open(file_csv_output, 'w') as file:
         file.write("DENOMINAZIONE(SIGLAPROVINCIA)\n")
         for item in coppie_formatted:
-            file.write("'%s',\n" % item)
+            file.write("%s\n" % item)
     
     print(f"Coppie univoche salvate in '{file_csv_output}'.")
+
+
 
 
 if __name__ == "__main__":
